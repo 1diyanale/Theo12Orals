@@ -8,8 +8,13 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap');
         
+        :root {
+            --base-font-size: 16px;
+        }
+
         body {
             font-family: 'Inter', sans-serif;
+            font-size: var(--base-font-size);
             transition: all 0.5s ease;
             overflow: hidden;
         }
@@ -51,7 +56,6 @@
 </head>
 <body class="bg-gray-100 text-gray-900 h-screen flex flex-col">
 
-    <!-- SETUP SCREEN -->
     <div id="setupScreen" class="fixed inset-0 z-50 bg-white flex items-center justify-center p-6 overflow-y-auto">
         <div class="max-w-2xl w-full space-y-6 my-auto">
             <div class="text-center">
@@ -77,7 +81,11 @@
                 </div>
 
                 <div class="space-y-4">
-                    <h3 class="font-bold text-lg text-indigo-600">Tema (Hex Codes)</h3>
+                    <h3 class="font-bold text-lg text-indigo-600">Visuals & Font</h3>
+                    <div>
+                        <label class="text-sm font-medium">Base Font Size (<span id="fontSizeVal">16</span>px)</label>
+                        <input type="range" id="baseFontSize" min="12" max="24" value="16" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-indigo-600" oninput="document.getElementById('fontSizeVal').innerText = this.value">
+                    </div>
                     <div>
                         <label class="text-sm font-medium">Primary (Background)</label>
                         <input type="text" id="color1" value="#F8FAFC" class="w-full p-2 border rounded-lg">
@@ -104,17 +112,18 @@
         </div>
     </div>
 
-    <!-- MAIN APP SCREEN -->
     <div id="appScreen" class="hidden h-full flex flex-col overflow-hidden">
         
         <header class="px-6 py-4 flex justify-between items-start border-b shrink-0 bg-white/20 backdrop-blur-md">
             <div class="flex-1">
-                <p id="mainInstruction" class="text-[13px] font-bold leading-snug">
+                <p id="mainInstruction" class="text-[0.85em] font-bold leading-snug">
                     Gamit ang mga temang ipinasa sa Canvas Assignment, ipamalas sa loob ng 7 minuto sa pamamagitan ng huling pabigkas na pagsusulit ang mga bungang pagkatuto ng kurso.
                 </p>
-                <p class="text-[11px] italic opacity-70 mt-1" id="displayReminders"></p>
+                <p class="text-[0.7em] italic opacity-70 mt-1" id="displayReminders"></p>
             </div>
-            <div class="ml-4 flex justify-end">
+            <div class="ml-4 flex gap-2">
+                <button onclick="adjustFontSize(-1)" class="p-2 hover:bg-black/5 rounded-lg text-xs font-bold border border-black/10">A-</button>
+                <button onclick="adjustFontSize(1)" class="p-2 hover:bg-black/5 rounded-lg text-xs font-bold border border-black/10">A+</button>
                 <button onclick="location.reload()" class="p-2 hover:bg-black/5 rounded-full transition-colors">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path><circle cx="12" cy="12" r="3"></circle></svg>
                 </button>
@@ -123,12 +132,11 @@
 
         <main class="flex-1 flex flex-row gap-4 p-4 overflow-hidden">
             
-            <!-- LEFT: Nilalaman (Widened) -->
             <div id="outlinePanel" class="w-[31%] flex flex-col glass-panel rounded-[1.5rem] shadow-sm border border-black/5 overflow-hidden">
                 <div class="p-4 border-b bg-white/10">
-                    <h3 class="font-bold text-sm flex items-center gap-2"><span>📚</span> Nilalaman ng Kurso</h3>
+                    <h3 class="font-bold text-[0.9em] flex items-center gap-2"><span>📚</span> Nilalaman ng Kurso</h3>
                 </div>
-                <div class="flex-1 overflow-y-auto p-4 space-y-4 text-[11px] custom-scroll">
+                <div class="flex-1 overflow-y-auto p-4 space-y-4 text-[0.75em] custom-scroll">
                     <div class="module-section">
                         <strong class="primary-accent-text block mb-1">Modyul 1: Kristiyanong Pananaw Hinggil sa Lipunan</strong>
                         <ul class="list-disc ml-4 opacity-80 space-y-0.5">
@@ -164,48 +172,46 @@
                 </div>
             </div>
 
-            <!-- CENTER: Timers (Narrowed slightly to give space) -->
             <div class="w-[38%] flex flex-col gap-4 overflow-hidden">
                 <div id="mainTimerCard" class="flex-[2.5] glass-panel rounded-[2rem] shadow-lg border border-black/5 flex flex-col items-center justify-center relative p-6">
-                    <div id="wrapUpLabel" class="wrap-up-msg text-red-600 text-lg mb-1 animate-bounce font-black">WRAP UP!</div>
-                    <h4 class="text-xs font-bold uppercase tracking-[0.2em] opacity-40">💬 Paliwanag</h4>
+                    <div id="wrapUpLabel" class="wrap-up-msg text-red-600 text-[1.2em] mb-1 animate-bounce font-black">WRAP UP!</div>
+                    <h4 class="text-[0.6em] font-bold uppercase tracking-[0.2em] opacity-40">💬 Paliwanag</h4>
                     <div id="explainDisplay" class="text-[6.5rem] font-black leading-none my-1 tabular-nums">00:00</div>
                     <div class="flex gap-4 mt-2">
-                        <button onclick="toggleTimer('explain')" id="btnExplain" class="px-7 py-3 rounded-2xl text-white font-black text-lg shadow-lg hover:scale-105 transition-all active:scale-95">START</button>
+                        <button onclick="toggleTimer('explain')" id="btnExplain" class="px-7 py-3 rounded-2xl text-white font-black text-[1.1em] shadow-lg hover:scale-105 transition-all active:scale-95">START</button>
                         <button onclick="resetTimer('explain')" class="px-5 py-3 rounded-2xl border-2 border-black/10 text-gray-400 font-bold hover:bg-white/50">RESET</button>
                     </div>
                 </div>
                 <div class="flex-1 grid grid-cols-2 gap-4">
                     <div id="qaPanel" class="glass-panel rounded-[1.5rem] shadow p-4 flex flex-col items-center justify-center border border-black/5">
-                        <h4 class="text-[9px] font-black uppercase opacity-40">🤔 Q & A</h4>
-                        <div id="qaDisplay" class="text-3xl font-black my-1 tabular-nums">00:00</div>
+                        <h4 class="text-[0.55em] font-black uppercase opacity-40">🤔 Q & A</h4>
+                        <div id="qaDisplay" class="text-[1.8em] font-black my-1 tabular-nums">00:00</div>
                         <div class="flex gap-2">
-                            <button onclick="toggleTimer('qa')" id="btnQA" class="px-4 py-1 rounded-lg text-white font-bold text-xs">START</button>
-                            <button onclick="resetTimer('qa')" class="px-2 py-1 rounded-lg border border-black/10 text-gray-400 text-[10px]">RESET</button>
+                            <button onclick="toggleTimer('qa')" id="btnQA" class="px-4 py-1 rounded-lg text-white font-bold text-[0.6em]">START</button>
+                            <button onclick="resetTimer('qa')" class="px-2 py-1 rounded-lg border border-black/10 text-gray-400 text-[0.5em]">RESET</button>
                         </div>
                     </div>
                     <div id="breakPanel" class="glass-panel rounded-[1.5rem] shadow p-4 flex flex-col items-center justify-center border border-black/5">
-                        <h4 class="text-[9px] font-black uppercase opacity-40">☕ Break</h4>
-                        <div id="breakDisplay" class="text-3xl font-black my-1 tabular-nums">00:00</div>
+                        <h4 class="text-[0.55em] font-black uppercase opacity-40">☕ Break</h4>
+                        <div id="breakDisplay" class="text-[1.8em] font-black my-1 tabular-nums">00:00</div>
                         <div class="flex gap-2">
-                            <button onclick="toggleTimer('break')" id="btnBreak" class="px-4 py-1 rounded-lg text-white font-bold text-xs">START</button>
-                            <button onclick="resetTimer('break')" class="px-2 py-1 rounded-lg border border-black/10 text-gray-400 text-[10px]">RESET</button>
+                            <button onclick="toggleTimer('break')" id="btnBreak" class="px-4 py-1 rounded-lg text-white font-bold text-[0.6em]">START</button>
+                            <button onclick="resetTimer('break')" class="px-2 py-1 rounded-lg border border-black/10 text-gray-400 text-[0.5em]">RESET</button>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- RIGHT: BPK (Widened) -->
             <div id="bpkPanel" class="w-[31%] flex flex-col glass-panel rounded-[1.5rem] shadow-sm border border-black/5 overflow-hidden">
                 <div class="p-4 border-b bg-white/10">
-                    <h3 class="font-bold text-sm flex items-center gap-2"><span>🎯</span> Bungang Pagkatuto</h3>
+                    <h3 class="font-bold text-[0.9em] flex items-center gap-2"><span>🎯</span> Bungang Pagkatuto</h3>
                 </div>
-                <div class="flex-1 overflow-y-auto p-4 space-y-4 text-[10.5px] leading-relaxed custom-scroll">
-                    <p><strong>BPK1:</strong> Maipaliwanag ang mga pangunahing tema na kaugnay sa panlipunang dimensyon ng Kristiyanong pananampalataya (kasama rito ang paglilista at pagtukoy sa mga tema bago ang mismong pabigkas na pagsusulit)</p>
-                    <p><strong>BPK2:</strong> Masuri ang kontemporaryong pampamayanan, pang-sektor at/o pambansang kalagayan ng Pilipinas at mai-ugnay ang pagsusuring ito sa Kristiyanong pananampalataya</p>
-                    <p><strong>BPK3:</strong> Maipamalas sa pamamagitan ng komunikasyong pasalita, pasulat o biswal ang higit na mapanuri at malawak na pag-unawa sa ugnayan at talaban ng iba't ibang isyu at perspektiba</p>
-                    <p><strong>BPK4:</strong> Malinang ang pagmamalasakit at diwa ng paglilingkod na hinuhubog ng mga karanasan ng pakikipagkapwa, pinalalim ng pag-unawa sa mga kalagayan at istrukturang ekonomiko, pulitikal at sosyo-kultural, at nagbubunga ng mapangilatis at mapanuring pakikisangkot at pagsasabuhay</p>
-                    <p><strong>BPK5:</strong> Magamit ang mga yaman ng Kristiyanong pananampalataya para matasa ang kanilang sari-sariling mga paraan ng pamumuhay at makapagbuo ng mga pagkilos at pagtataya para sa isang pamumuhay na may higit na pakikipagkapwa sa mga naisasantabi at mga nasa laylayan ng lipunan</p>
+                <div class="flex-1 overflow-y-auto p-4 space-y-4 text-[0.7em] leading-relaxed custom-scroll">
+                    <p><strong>BPK1:</strong> Maipaliwanag ang mga pangunahing tema na kaugnay sa panlipunang dimensyon ng Kristiyanong pananampalataya...</p>
+                    <p><strong>BPK2:</strong> Masuri ang kontemporaryong pampamayanan, pang-sektor at/o pambansang kalagayan ng Pilipinas...</p>
+                    <p><strong>BPK3:</strong> Maipamalas sa pamamagitan ng komunikasyong pasalita, pasulat o biswal ang higit na mapanuri...</p>
+                    <p><strong>BPK4:</strong> Malinang ang pagmamalasakit at diwa ng paglilingkod na hinuhubog ng mga karanasan...</p>
+                    <p><strong>BPK5:</strong> Magamit ang mga yaman ng Kristiyanong pananampalataya para matasa ang kanilang sari-sariling paraan...</p>
                     
                     <div class="border-t border-black/10 pt-3 mt-2">
                         <p id="instructorNote" class="font-bold italic leading-snug">
@@ -225,14 +231,24 @@
             break: { time: 0, initial: 0, interval: null, running: false, display: 'breakDisplay', btn: 'btnBreak' }
         };
 
+        let currentBaseSize = 16;
+
+        function adjustFontSize(delta) {
+            currentBaseSize += delta;
+            document.documentElement.style.setProperty('--base-font-size', currentBaseSize + 'px');
+        }
+
         function launchApp() {
+            currentBaseSize = parseInt(document.getElementById('baseFontSize').value);
+            document.documentElement.style.setProperty('--base-font-size', currentBaseSize + 'px');
+
             const expMin = parseInt(document.getElementById('defExplain').value) || 0;
             const qaMin = parseInt(document.getElementById('defQA').value) || 0;
             const breakMin = parseInt(document.getElementById('defBreak').value) || 0;
             
-            const c1 = document.getElementById('color1').value; // Primary (BG)
-            const c2 = document.getElementById('color2').value; // Accent
-            const c3 = document.getElementById('color3').value; // Text
+            const c1 = document.getElementById('color1').value;
+            const c2 = document.getElementById('color2').value;
+            const c3 = document.getElementById('color3').value;
             const rems = document.getElementById('reminders').value;
 
             timers.explain.initial = expMin * 60;
@@ -246,27 +262,14 @@
 
             document.getElementById('mainInstruction').innerText = `Gamit ang mga temang ipinasa sa Canvas Assignment, ipamalas sa loob ng ${expMin} minuto sa pamamagitan ng huling pabigkas na pagsusulit ang mga bungang pagkatuto ng kurso.`;
 
-            // Apply Themes
             document.body.style.backgroundColor = c1;
             document.body.style.color = c3;
-            document.getElementById('mainInstruction').style.color = c3;
             document.getElementById('displayReminders').innerText = rems;
             document.querySelectorAll('.primary-accent-text').forEach(el => el.style.color = c2);
             document.getElementById('instructorNote').style.color = c2;
-            
-            // Apply Panel Styles
-            const panels = ['outlinePanel', 'mainTimerCard', 'qaPanel', 'breakPanel', 'bpkPanel'];
-            panels.forEach(id => {
-                const el = document.getElementById(id);
-                // Glass effect based on user color preference
-                el.style.backgroundColor = `rgba(255, 255, 255, 0.7)`; 
-                el.style.borderColor = 'rgba(0,0,0,0.05)';
-            });
-
             document.getElementById('btnExplain').style.backgroundColor = c2;
             document.getElementById('btnQA').style.backgroundColor = c3;
             document.getElementById('btnBreak').style.backgroundColor = c3;
-            document.getElementById('explainDisplay').style.color = c3;
 
             document.getElementById('setupScreen').classList.add('hidden');
             document.getElementById('appScreen').classList.remove('hidden');
@@ -278,9 +281,7 @@
             const absTime = Math.abs(t.time);
             const m = Math.floor(absTime / 60);
             const s = absTime % 60;
-            
-            const sign = isNegative ? '-' : '';
-            const str = `${sign}${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+            const str = `${isNegative ? '-' : ''}${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
             
             const displayEl = document.getElementById(t.display);
             displayEl.innerText = str;
@@ -288,22 +289,26 @@
             const textColor = document.getElementById('color3').value;
 
             if (isNegative) {
-                displayEl.style.color = '#fca5a5'; // Soft Red for overtime
-                displayEl.classList.remove('blink');
-                if (key === 'explain') document.getElementById('mainTimerCard').classList.remove('wrap-up-active');
-            } else if (key === 'explain') {
-                const card = document.getElementById('mainTimerCard');
-                if (t.time <= 60 && t.time > 0 && t.running) {
-                    card.classList.add('wrap-up-active');
-                    displayEl.classList.add('blink');
-                    displayEl.style.color = '#ef4444'; // Warning Red
-                } else if (t.time === 0) {
-                    displayEl.style.color = '#ef4444';
-                    card.classList.remove('wrap-up-active');
+                displayEl.style.color = '#ef4444'; // Red for overtime
+                if (key === 'explain') {
+                    document.getElementById('mainTimerCard').classList.remove('wrap-up-active');
                     displayEl.classList.remove('blink');
+                }
+            } else {
+                // Return to normal color if NOT negative
+                if (key === 'explain') {
+                    const card = document.getElementById('mainTimerCard');
+                    if (t.time <= 60 && t.time > 0 && t.running) {
+                        card.classList.add('wrap-up-active');
+                        displayEl.classList.add('blink');
+                        displayEl.style.color = '#ef4444'; // Warning color
+                    } else {
+                        card.classList.remove('wrap-up-active');
+                        displayEl.classList.remove('blink');
+                        displayEl.style.color = textColor;
+                    }
                 } else {
-                    card.classList.remove('wrap-up-active');
-                    displayEl.classList.remove('blink');
+                    // Q&A and Break logic to return to custom text color
                     displayEl.style.color = textColor;
                 }
             }
